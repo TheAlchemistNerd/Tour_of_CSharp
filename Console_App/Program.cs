@@ -23,7 +23,7 @@ namespace Console_App
                  }
              }
             */
-            showTeleprompter().Wait();
+            RunTeleprompter().Wait();
         }
 
         static IEnumerable<string> ReadFrom(string file)
@@ -50,7 +50,7 @@ namespace Console_App
             }
         }
 
-        private static async Task showTeleprompter()
+        private static async Task showTeleprompter(TelePrompterConfig config)
         {
             var words = ReadFrom("sampleQuotes.txt");
             foreach (var word in words)
@@ -58,9 +58,37 @@ namespace Console_App
                 Console.Write(word);
                 if (!string.IsNullOrWhiteSpace(word))
                 {
-                    await Task.Delay(200);
+                    await Task.Delay(config.DelayInMilliseconds);
                 }
             }
+            config.setDone();
+        }
+
+        private async Task GetInput(TelePrompterConfig config)
+        {
+            Action work = () =>
+            {
+                do
+                {
+                    var key = Console.ReadKey(true);
+                    if (key.KeyChar == '>')
+                        config.updateDelay(-10);
+                    else if (key.KeyChar == '<')
+                        config.updateDelay(10);
+                    else if (key.KeyChar == 'X' || key.KeyChar == 'x')
+                        config.setDone();
+                } while (!config.Done);
+            };
+            await Task.Run(work);
+        }
+
+        private static async Task RunTeleprompter()
+        {
+            var config = new TelePrompterConfig();
+            var displayTask = showTeleprompter(config);
+
+            var speedTask = GetInput(config);
+            await Task.WhenAny(displayTask, speedTask);
         }
     }
 }
