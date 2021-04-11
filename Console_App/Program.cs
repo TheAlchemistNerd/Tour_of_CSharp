@@ -9,19 +9,21 @@ namespace Console_App
     {
         static void Main(string[] args)
         {
-            var lines = ReadFrom("sampleQuotes.txt");
-            foreach (var line in lines)
-            {
-                Console.Write(line);
-                if (!string.IsNullOrWhiteSpace(line))
-                {
-                    var pause = Task.Delay(200);
-                    // Synchronously waiting on a task is an
-                    // anti-pattern. This will get fixed in later
-                    // steps
-                    pause.Wait();
-                }
-            }
+            /*var lines = ReadFrom("sampleQuotes.txt");
+              foreach (var line in lines)
+              {
+                 Console.Write(line);
+                 if (!string.IsNullOrWhiteSpace(line))
+                 {
+                     var pause = Task.Delay(200);
+                     // Synchronously waiting on a task is an
+                     // anti-pattern. This will get fixed in later
+                     // steps
+                     pause.Wait();
+                 }
+             }
+            */
+            showTeleprompter().Wait();
         }
 
         static IEnumerable<string> ReadFrom(string file)
@@ -44,6 +46,19 @@ namespace Console_App
                         }
                     }
                     yield return Environment.NewLine;
+                }
+            }
+        }
+
+        private static async Task showTeleprompter()
+        {
+            var words = ReadFrom("sampleQuotes.txt");
+            foreach (var word in words)
+            {
+                Console.Write(word);
+                if (!string.IsNullOrWhiteSpace(word))
+                {
+                    await Task.Delay(200);
                 }
             }
         }
