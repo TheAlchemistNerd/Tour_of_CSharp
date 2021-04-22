@@ -19,7 +19,5 @@ namespace Console_App
         {
             Done = true;
         }
-
-
     }
 }
