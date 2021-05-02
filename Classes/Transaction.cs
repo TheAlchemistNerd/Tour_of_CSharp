@@ -12,7 +12,7 @@ namespace Classes
         {
             this.Amount = amount;
             this.Date = date;
-            this.Notes = Notes;
+            this.Notes = note;
         }
     }
 }
